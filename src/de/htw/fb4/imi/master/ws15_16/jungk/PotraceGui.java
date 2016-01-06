@@ -30,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -57,6 +58,7 @@ public class PotraceGui extends JPanel {
 
 	private static final int windowWidth = 800;
 	private static final int windowHeight = 400;
+	private static final int SIZE_SVG_INPUTFIELDS = 5;
 
 	private JSlider zoomSlider;
 
@@ -79,6 +81,10 @@ public class PotraceGui extends JPanel {
 	private JCheckBox showPolygonsCheckbox;
 	private JCheckBox showImageCheckbox;
 	private File input;
+	private JCheckBox renderCurveFillings;
+	private JTextField curveAlpha;
+	private JTextField curveMinAlpha;
+	private JTextField curveMaxAlpha;
 
 	public PotraceGui() {
 		super(new BorderLayout(border, border));
@@ -130,9 +136,7 @@ public class PotraceGui extends JPanel {
 				} else {
 					ImageView.boolRaster = false;
 					runPotrace();
-				}
-				// System.out.println(e.getStateChange() == ItemEvent.SELECTED ?
-				// "selected" : "unasdted");
+				}	
 			}
 		});
 
@@ -151,10 +155,6 @@ public class PotraceGui extends JPanel {
 				dstView.setZoom(zoomSlider.getValue());
 			}
 		});
-
-		// some status text
-		statusArea = new JTextArea(TEXTAREA_ROWS, TEXTAREA_COLS);
-		statusArea.setEditable(false);
 
 		this.showImageCheckbox = new JCheckBox("Image", ImageView.SHOW_IMAGE_DEFAULT);
 		showImageCheckbox.addItemListener(new ItemListener() {
@@ -193,8 +193,24 @@ public class PotraceGui extends JPanel {
 			}
 		});
 
-		JScrollPane scrollPane = new JScrollPane(statusArea);
+		JPanel controls = prepareTopControls(load, turnPolicyText, rasterCheckBox, zoomLabel);		
+		JPanel southControls = prepareBottomControls();
 
+		this.imagesPanel = new JPanel(new FlowLayout());
+		imagesPanel.setPreferredSize(new Dimension(windowWidth, windowHeight));
+		imagesPanel.add(dstView);
+
+		add(controls, BorderLayout.NORTH);
+		add(imagesPanel, BorderLayout.CENTER);
+		add(southControls, BorderLayout.SOUTH);
+
+		setBorder(BorderFactory.createEmptyBorder(border, border, border, border));
+
+		this.runPotrace();
+	}
+
+	protected JPanel prepareTopControls(JButton load, JLabel turnPolicyText, JCheckBox rasterCheckBox,
+			JLabel zoomLabel) {
 		// arrange all controls
 		JPanel controls = new JPanel(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
@@ -209,18 +225,49 @@ public class PotraceGui extends JPanel {
 		controls.add(displayInnerCheckbox, c);
 		controls.add(showPolygonsCheckbox, c);
 		controls.add(rasterCheckBox, c);
+		return controls;
+	}
 
-		this.imagesPanel = new JPanel(new FlowLayout());
-		imagesPanel.setPreferredSize(new Dimension(windowWidth, windowHeight));
-		imagesPanel.add(dstView);
+	protected JPanel prepareBottomControls() {		
+		// some status text
+		statusArea = new JTextArea(TEXTAREA_ROWS, TEXTAREA_COLS);
+		statusArea.setEditable(false);
+		
+		JScrollPane scrollPane = new JScrollPane(statusArea);
+		
+		this.renderCurveFillings = new JCheckBox("Fill curves", ImageView.SHOW_OUTLINES_POLYGONS_DEFAULT);		
+		JLabel curveAlphaLabel = new JLabel("Alpha:");
+		this.curveAlpha = new JTextField("1.333333", SIZE_SVG_INPUTFIELDS);
+		JLabel curveMinAlphaLabel = new JLabel("Min Alpha:");
+		this.curveMinAlpha = new JTextField("0.55", SIZE_SVG_INPUTFIELDS);
+		JLabel curveMaxAlphaLabel = new JLabel("Max Alpha:");
+		this.curveMaxAlpha = new JTextField("1.0", SIZE_SVG_INPUTFIELDS);
+		
+		// arrange curve / SVG controls
+		JPanel southControls = new JPanel(new GridBagLayout());		
+		GridBagConstraints cSouth = new GridBagConstraints();
+		cSouth.insets = new Insets(0, border, 0, 0);		
+		
+		// save SVG button
+		JButton saveSvg = new JButton("Create curves and save as SVG");
+		saveSvg.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				createCurves();
+				saveAsSVG();
+			}		
+		});
 
-		add(controls, BorderLayout.NORTH);
-		add(imagesPanel, BorderLayout.CENTER);
-		add(scrollPane, BorderLayout.SOUTH);
-
-		setBorder(BorderFactory.createEmptyBorder(border, border, border, border));
-
-		this.runPotrace();
+		southControls.add(scrollPane, cSouth);		
+		southControls.add(curveAlphaLabel, cSouth);		
+		southControls.add(curveAlpha, cSouth);
+		southControls.add(curveMinAlphaLabel, cSouth);	
+		southControls.add(curveMinAlpha, cSouth);
+		southControls.add(curveMaxAlphaLabel, cSouth);	
+		southControls.add(curveMaxAlpha, cSouth);
+		southControls.add(renderCurveFillings, cSouth);
+		southControls.add(saveSvg, cSouth);
+		
+		return southControls;
 	}
 
 	private File openFile() {
@@ -294,7 +341,18 @@ public class PotraceGui extends JPanel {
 		dstView.saveImage("out.png");
 
 	}
+	
 
+	private void createCurves() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private void saveAsSVG() {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	protected void triggerOutlineFinding(TurnPolicy policy, int[] dstPixels) {
 		long time = 0;
 
