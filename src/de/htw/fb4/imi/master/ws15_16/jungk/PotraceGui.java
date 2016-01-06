@@ -26,6 +26,7 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
@@ -38,9 +39,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Factory;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Vector2D;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.ff.AbstractFloodFilling.Mode;
+import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.BezierCurveFinder;
+import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.ICurveFinder;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.IOutlinePathFinder;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.IOutlinePathFinder.TurnPolicy;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.IPolygonFinder;
+import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Curve;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Outline;
 
 public class PotraceGui extends JPanel {
@@ -85,6 +89,7 @@ public class PotraceGui extends JPanel {
 	private JTextField curveAlpha;
 	private JTextField curveMinAlpha;
 	private JTextField curveMaxAlpha;
+	private ICurveFinder curveFinderAlgorithm;
 
 	public PotraceGui() {
 		super(new BorderLayout(border, border));
@@ -237,11 +242,11 @@ public class PotraceGui extends JPanel {
 		
 		this.renderCurveFillings = new JCheckBox("Fill curves", ImageView.SHOW_OUTLINES_POLYGONS_DEFAULT);		
 		JLabel curveAlphaLabel = new JLabel("Alpha:");
-		this.curveAlpha = new JTextField("1.333333", SIZE_SVG_INPUTFIELDS);
+		this.curveAlpha = new JTextField(BezierCurveFinder.DEFAULT_ALPHA.toString(), SIZE_SVG_INPUTFIELDS);
 		JLabel curveMinAlphaLabel = new JLabel("Min Alpha:");
-		this.curveMinAlpha = new JTextField("0.55", SIZE_SVG_INPUTFIELDS);
+		this.curveMinAlpha = new JTextField(BezierCurveFinder.DEFAUTL_MIN_ALPHA.toString(), SIZE_SVG_INPUTFIELDS);
 		JLabel curveMaxAlphaLabel = new JLabel("Max Alpha:");
-		this.curveMaxAlpha = new JTextField("1.0", SIZE_SVG_INPUTFIELDS);
+		this.curveMaxAlpha = new JTextField(BezierCurveFinder.DEFAULT_MAX_ALPHA.toString(), SIZE_SVG_INPUTFIELDS);
 		
 		// arrange curve / SVG controls
 		JPanel southControls = new JPanel(new GridBagLayout());		
@@ -252,8 +257,8 @@ public class PotraceGui extends JPanel {
 		JButton saveSvg = new JButton("Create curves and save as SVG");
 		saveSvg.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				createCurves();
-				saveAsSVG();
+				Set<Curve[]> curves = createCurves();
+				saveAsSVG(curves);
 			}		
 		});
 
@@ -343,13 +348,57 @@ public class PotraceGui extends JPanel {
 	}
 	
 
-	private void createCurves() {
-		// TODO Auto-generated method stub
+	private Set<Curve[]> createCurves() {
+		Set<Curve[]> curves = new HashSet<>();
+		this.curveFinderAlgorithm = Factory.newBezierCurveAlgorithm();
 		
+		if (this.hasValidInputs()) {
+			Set<Vector2D[]> polygons = this.dstView.getPolygons();
+			
+			for (Vector2D[] polygon : polygons) {
+				curves.add(this.curveFinderAlgorithm.calculateCurve(polygon));
+			}			
+		}		
+		
+		return curves;
+	}		
+
+	private boolean hasValidInputs() {
+		try {
+			double curveAlpha = Double.parseDouble(this.curveAlpha.getText());	
+			((BezierCurveFinder) this.curveFinderAlgorithm).setAlpha(curveAlpha);
+		} catch (Exception e) {
+			this.showError("Invalid value for curve alpha. Must be a double!");
+			return false;
+		}
+		
+		try {
+			double curveMinAlpha = Double.parseDouble(this.curveMinAlpha.getText());
+			((BezierCurveFinder) this.curveFinderAlgorithm).setMinAlpha(curveMinAlpha);
+		} catch (Exception e) {
+			this.showError("Invalid value for curve min alpha. Must be a double!");
+			return false;
+		}
+		
+		try {
+			double curveMaxAlpha = Double.parseDouble(this.curveMaxAlpha.getText());
+			((BezierCurveFinder) this.curveFinderAlgorithm).setMaxAlpha(curveMaxAlpha);
+		} catch (Exception e) {
+			this.showError("Invalid value for curve max alpha. Must be a double!");			
+			return false;
+		}
+		
+		return true;
 	}
 
-	private void saveAsSVG() {
-		// TODO Auto-generated method stub
+	private void showError(String string) {
+		JOptionPane.showMessageDialog(this,
+				string,
+				"Invalid value",
+				JOptionPane.ERROR_MESSAGE);
+	}
+
+	private void saveAsSVG(Set<Curve[]> curves) {
 		
 	}
 	

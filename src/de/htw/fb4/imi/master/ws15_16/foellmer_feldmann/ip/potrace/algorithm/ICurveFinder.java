@@ -26,5 +26,5 @@ public interface ICurveFinder {
 	 * @param polygon
 	 * @return
 	 */
-	Curve[] calculateCurves(Vector2D[] polygon);
+	Curve[] calculateCurve(Vector2D[] polygon);
 }

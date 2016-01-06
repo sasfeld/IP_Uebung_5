@@ -17,6 +17,8 @@ import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.ff.OptimizedBreadthFir
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.ff.OptimizedDepthFirst;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.ff.Sequential;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.parser.FileOutlineParser;
+import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.BezierCurveFinder;
+import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.ICurveFinder;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.IOutlinePathFinder;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.IPolygonFinder;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.PotraceOutlineFinder;
@@ -144,5 +146,9 @@ public class Factory {
 
 	private static FileOutlineParser newFileOutlineParser() {
 		return new FileOutlineParser();
+	}
+
+	public static ICurveFinder newBezierCurveAlgorithm() {
+		return new BezierCurveFinder();
 	}
 }

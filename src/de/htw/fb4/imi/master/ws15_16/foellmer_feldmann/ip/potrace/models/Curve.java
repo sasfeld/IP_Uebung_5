@@ -15,8 +15,24 @@ import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Vertex;
  */
 public class Curve {
 	protected Vertex first;
-	protected Vertex last;
+	protected Vertex last;	
 	
+	protected Vertex second;
+	
+	/**
+	 * @return the second
+	 */
+	public Vertex getSecond() {
+		return second;
+	}
+	
+	/**
+	 * @param second the second to set
+	 */
+	public void setSecond(Vertex second) {
+		this.second = second;
+	}	
+
 	/**
 	 * @return the first
 	 */
@@ -54,6 +70,7 @@ public class Curve {
 		int result = 1;
 		result = prime * result + ((first == null) ? 0 : first.hashCode());
 		result = prime * result + ((last == null) ? 0 : last.hashCode());
+		result = prime * result + ((second == null) ? 0 : second.hashCode());
 		return result;
 	}
 
@@ -79,6 +96,11 @@ public class Curve {
 				return false;
 		} else if (!last.equals(other.last))
 			return false;
+		if (second == null) {
+			if (other.second != null)
+				return false;
+		} else if (!second.equals(other.second))
+			return false;
 		return true;
 	}
 
@@ -88,7 +110,9 @@ public class Curve {
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Curve [getFirst()=");
+		builder.append("Curve [getSecond()=");
+		builder.append(getSecond());
+		builder.append(", getFirst()=");
 		builder.append(getFirst());
 		builder.append(", getLast()=");
 		builder.append(getLast());

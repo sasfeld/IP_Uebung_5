@@ -534,4 +534,8 @@ public class ImageView extends JScrollPane {
 				return new Dimension(100, 60);
 		}
 	}
+
+	public Set<Vector2D[]> getPolygons() {
+		return this.polygons;
+	}
 }
