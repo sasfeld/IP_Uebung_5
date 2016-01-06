@@ -401,6 +401,10 @@ public class PotraceGui extends JPanel {
 	}
 
 	private void saveAsSVG(Set<Curve[]> curves) {
+		if (null == curves || curves.size() == 0) {
+			return;
+		}
+		
 		SvgBuilder svgBuilder = new SvgBuilder();
 		svgBuilder.setRenderCurveFillings(this.renderCurveFillings.isSelected());
 		svgBuilder.setTitle(this.input.getName() + " Curves");
