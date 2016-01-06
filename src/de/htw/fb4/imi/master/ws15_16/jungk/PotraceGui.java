@@ -405,6 +405,8 @@ public class PotraceGui extends JPanel {
 		svgBuilder.setRenderCurveFillings(this.renderCurveFillings.isSelected());
 		svgBuilder.setTitle(this.input.getName() + " Curves");
 		svgBuilder.setCurves(curves);
+		svgBuilder.setViewBoxWidth("" + this.srcView.getImgWidth());
+		svgBuilder.setViewBoxHeight("" + this.srcView.getImgHeight());
 		
 		String builtSvg = svgBuilder.build();
 		

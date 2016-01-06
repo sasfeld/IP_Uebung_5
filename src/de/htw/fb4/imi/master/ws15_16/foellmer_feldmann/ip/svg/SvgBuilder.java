@@ -20,22 +20,29 @@ import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Curve;
 public class SvgBuilder {
 	private static String STYLE_HEADER = "<style type=\"text/css\">" + "<![CDATA[" + "text {font-size:24px; }" + "]]>"
 			+ "</style>";
-	private static final String HEADER = "<svg xmlns=\"http://www.w3.org/2000/svg\""
+	private static final String HEADER = ""
+			+ "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+			+ "<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\" \"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd\">\n\n"
+			+ "<svg xmlns=\"http://www.w3.org/2000/svg\""
 			+ " xmlns:xlink=\"http://www.w3.org/1999/xlink\""
 			+ " xmlns:ev=\"http://www.w3.org/2001/xml-events\""
 			+ " version=\"1.1\""
 			+ " baseProfile=\"full\""
-			+ " width=\"%d\""
-			+ " height=\"%d\">";
+			+ " width=\"%s\""
+			+ " height=\"%s\" "
+			+ " viewBox=\"0 0 %s %s\""
+			+ ">";
 	private static final String TITLE_HEADER = "<title>%s</title>";
-	private static final String DIRECT_CURVE = "<path stroke=\"%s\" fill=\"%s\" stroke-width=\"%d\" d=\"%s\" />";
-	private static final String BEZIER_CURVE = "<path stroke=\"%s\" fill=\"%s\" stroke-width=\"%d\" d=\"%s\" />";
+	private static final String DIRECT_CURVE = "<path stroke=\"%s\" fill=\"%s\" stroke-width=\"%s\" d=\"%s\" />";
+	private static final String BEZIER_CURVE = "<path stroke=\"%s\" fill=\"%s\" stroke-width=\"%s\" d=\"%s\" />";
 
 	private static final String CLOSING_TAG = "</svg>";
 
-	private int height = 300;
-	private int width = 500;
-	private int curveStrokeWidth = 1;
+	private String height = "100%";
+	private String width = "100%";
+	private String viewBoxHeight = "100%";
+	private String viewBoxWidth = "100%";
+	private String curveStrokeWidth = "0.1";
 	private String curveStrokeColor = "black";
 	private String curveFillColor = "green";
 
@@ -69,20 +76,36 @@ public class SvgBuilder {
 		return title;
 	}
 
-	public void setHeight(int height) {
+	public void setHeight(String height) {
 		this.height = height;
 	}
 
-	public int getHeight() {
+	public String getHeight() {
 		return height;
 	}
 
-	public void setWidth(int width) {
+	public void setWidth(String width) {
 		this.width = width;
 	}
 
-	public int getWidth() {
+	public String getWidth() {
 		return width;
+	}
+	
+	public void setViewBoxHeight(String viewBoxHeight) {
+		this.viewBoxHeight = viewBoxHeight;
+	}
+	
+	public String getViewBoxHeight() {
+		return viewBoxHeight;
+	}
+	
+	public void setViewBoxWidth(String viewBoxWidth) {
+		this.viewBoxWidth = viewBoxWidth;
+	}
+	
+	public String getViewBoxWidth() {
+		return viewBoxWidth;
 	}
 
 	/**
@@ -157,7 +180,7 @@ public class SvgBuilder {
 	}
 
 	private void appendHeader(StringBuilder strBuilder) {
-		addLine(strBuilder, String.format(HEADER, width, height));
+		addLine(strBuilder, String.format(HEADER, width, height, viewBoxWidth, viewBoxHeight));
 	}
 
 	private void addLine(StringBuilder strBuilder, String line) {
