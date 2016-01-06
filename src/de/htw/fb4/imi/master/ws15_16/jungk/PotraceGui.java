@@ -46,6 +46,8 @@ import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.IOut
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.IPolygonFinder;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Curve;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Outline;
+import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.svg.SvgBuilder;
+import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.svg.SvgSaver;
 
 public class PotraceGui extends JPanel {
 
@@ -399,9 +401,27 @@ public class PotraceGui extends JPanel {
 	}
 
 	private void saveAsSVG(Set<Curve[]> curves) {
+		SvgBuilder svgBuilder = new SvgBuilder();
+		svgBuilder.setRenderCurveFillings(this.renderCurveFillings.isSelected());
+		svgBuilder.setTitle(this.input.getName() + " Curves");
+		svgBuilder.setCurves(curves);
 		
+		String builtSvg = svgBuilder.build();
+		
+		SvgSaver svgSaver = new SvgSaver();
+		svgSaver.setInputFileName(this.input.getName());
+		svgSaver.save(builtSvg);		
+		
+		this.showSuccessMessage("The curves SVG file was saved as " + svgSaver.getSvgFileName());
 	}
 	
+	private void showSuccessMessage(String string) {
+		JOptionPane.showMessageDialog(this,
+				string,
+				"Success",
+				JOptionPane.INFORMATION_MESSAGE);		
+	}
+
 	protected void triggerOutlineFinding(TurnPolicy policy, int[] dstPixels) {
 		long time = 0;
 
