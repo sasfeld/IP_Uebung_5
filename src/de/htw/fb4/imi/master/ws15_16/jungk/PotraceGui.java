@@ -37,7 +37,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Factory;
-import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Vector2D;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.ff.AbstractFloodFilling.Mode;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.BezierCurveFinder;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.ICurveFinder;
@@ -46,6 +45,7 @@ import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.IOut
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.IPolygonFinder;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Curve;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Outline;
+import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Polygon;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.svg.SvgBuilder;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.svg.SvgSaver;
 
@@ -355,9 +355,9 @@ public class PotraceGui extends JPanel {
 		this.curveFinderAlgorithm = Factory.newBezierCurveAlgorithm();
 		
 		if (this.hasValidInputs()) {
-			Set<Vector2D[]> polygons = this.dstView.getPolygons();
+			Set<Polygon> polygons = this.dstView.getPolygons();
 			
-			for (Vector2D[] polygon : polygons) {
+			for (Polygon polygon : polygons) {
 				curves.add(this.curveFinderAlgorithm.calculateCurve(polygon));
 			}			
 		}		
@@ -465,14 +465,14 @@ public class PotraceGui extends JPanel {
 
 	private long findAndShowPolygons(int[] dstPixels) {
 		Set<Outline> outlines = this.dstView.getOutlines();
-		Set<Vector2D[]> outerPolygons = new HashSet<>();
+		Set<Polygon> outerPolygons = new HashSet<>();
 
 		long startTime = System.currentTimeMillis();
 
 		for (Outline outline : outlines) {
 				int[] pivots = this.polygonFinderAlgorithm.findStraightPathes(outline);
 				int[] possibleSegments = this.polygonFinderAlgorithm.findPossibleSegments(pivots);
-				Vector2D[] polygon = this.polygonFinderAlgorithm.findOptimalPolygon(possibleSegments);
+				Polygon polygon = this.polygonFinderAlgorithm.findOptimalPolygon(possibleSegments);
 				outerPolygons.add(polygon);
 		}
 

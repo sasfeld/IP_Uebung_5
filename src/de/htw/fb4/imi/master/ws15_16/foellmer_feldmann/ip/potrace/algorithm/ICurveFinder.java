@@ -5,8 +5,8 @@
  */
 package de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm;
 
-import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Vector2D;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Curve;
+import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Polygon;
 
 /**
  * Interface for curve finding algorithms, e.g. bezier.
@@ -26,5 +26,5 @@ public interface ICurveFinder {
 	 * @param polygon
 	 * @return
 	 */
-	Curve[] calculateCurve(Vector2D[] polygon);
+	Curve[] calculateCurve(Polygon polygon);
 }

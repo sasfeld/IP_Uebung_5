@@ -11,6 +11,7 @@ import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Vector2D;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Vertex;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.BezierCurve;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Curve;
+import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Polygon;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.util.VectorUtil;
 
 /**
@@ -58,7 +59,7 @@ public class BezierCurveFinder implements ICurveFinder {
 	 * @see de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.ICurveFinder#calculateCurves(de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Vector2D[])
 	 */
 	@Override
-	public Curve[] calculateCurve(Vector2D[] polygon) {
+	public Curve[] calculateCurve(Polygon polygon) {
 		this.curves = new ArrayList<>();
 		
 		this.createCurves(polygon);		
@@ -66,19 +67,19 @@ public class BezierCurveFinder implements ICurveFinder {
 		return curves.toArray(new Curve[curves.size()]);
 	}
 
-	private void createCurves(Vector2D[] polygon) {
-		for (int i = 0; i < polygon.length; i++) {
+	private void createCurves(Polygon polygon) {
+		for (int i = 0; i < polygon.size(); i++) {
 			Vertex bIMinus1 = null;
 			
 			// Step 1: find Mittelpunkte (center)
-			Vertex aI = polygon[i].getA();
-			Vertex bI = calcMiddle(polygon[i].getA(), polygon[i].getB());
+			Vertex aI = polygon.get(i).getA();
+			Vertex bI = calcMiddle(polygon.get(i).getA(), polygon.get(i).getB());
 			
 			if (i == 0) {
 				// last element is the last vertex within the polygon
-				bIMinus1 = calcMiddle(polygon[polygon.length - 1].getA(), polygon[polygon.length - 1].getB());
+				bIMinus1 = calcMiddle(polygon.get(polygon.size() - 1).getA(), polygon.get(polygon.size() - 1).getB());
 			} else {
-				bIMinus1 = calcMiddle(polygon[i - 1].getA(), polygon[i - 1].getB());
+				bIMinus1 = calcMiddle(polygon.get(i - 1).getA(), polygon.get(i - 1).getB());
 			}
 			
 			// Step 2: calculate Alpha
@@ -97,6 +98,7 @@ public class BezierCurveFinder implements ICurveFinder {
 				c.setFirst(bIMinus1);
 				c.setSecond(aI);
 				c.setLast(bI);
+				c.setOuter(polygon.isOuter());
 			} else {
 				// Bezierkurve
 				c = new BezierCurve();
@@ -111,6 +113,7 @@ public class BezierCurveFinder implements ICurveFinder {
 						(int) (aI.getY() + (a * (bI.getY() - aI.getY()))));
 				cBezier.setThird(z2);
 				c.setLast(bI);
+				c.setOuter(polygon.isOuter());
 			}
 			
 			this.curves.add(c);

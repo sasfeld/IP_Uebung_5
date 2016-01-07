@@ -5,13 +5,13 @@
  */
 package de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Factory;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Vector2D;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Vertex;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Outline;
+import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Polygon;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.util.VectorUtil;
 
 /**
@@ -46,6 +46,8 @@ public class PotracePolygonFinder implements IPolygonFinder {
 	private boolean directionLeft;
 	private boolean directionBottom;
 	private boolean directionRight;
+	private boolean isOuter;
+	
 
 	/*
 	 * (non-Javadoc)
@@ -62,6 +64,7 @@ public class PotracePolygonFinder implements IPolygonFinder {
 		}
 
 		this.outlineVertices = givenOutline.getVertices();
+		this.isOuter = givenOutline.isOuter();
 		this.pivots = new int[outlineVertices.length];
 
 		int startI = getStartVertexIndex(givenOutline);
@@ -266,30 +269,32 @@ public class PotracePolygonFinder implements IPolygonFinder {
 	 * de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm.
 	 * IPolygonFinder#findOptimalPolygon(int[])
 	 */
-	public Vector2D[] findOptimalPolygon(int[] possibleSegments) {
+	public Polygon findOptimalPolygon(int[] possibleSegments) {
 		return getOptimalPolygon(possibleSegments);
 	}
 
-	private Vector2D[] getOptimalPolygon(int[] possibleSegments) {
-		List<Vector2D> bestPolygon = new ArrayList<>();
+	private Polygon getOptimalPolygon(int[] possibleSegments) {
+		Polygon bestPolygon = new Polygon();
 
 		for (int startIndex = 0; startIndex < possibleSegments.length; startIndex++) {
-			List<Vector2D> newPolygon = buildPolygon(possibleSegments, startIndex);
+			Polygon newPolygon = buildPolygon(possibleSegments, startIndex);
 
 			if (better(newPolygon, bestPolygon)) {
 				bestPolygon = newPolygon;
 			}
 		}
 
-		return bestPolygon.toArray(new Vector2D[bestPolygon.size()]);
+		return bestPolygon;
 	}
 
 	private boolean better(List<Vector2D> newPolygon, List<Vector2D> bestPolygon) {
 		return bestPolygon.size() == 0 || (newPolygon.size() < bestPolygon.size() && newPolygon.size() != 0);
 	}
 
-	protected List<Vector2D> buildPolygon(int[] possibleSegments, int startIndex) {
-		List<Vector2D> polygon = new ArrayList<>();
+	protected Polygon buildPolygon(int[] possibleSegments, int startIndex) {
+		Polygon polygon = new Polygon();
+		polygon.setOuter(this.isOuter);
+		
 		final Vertex startVertex = this.outlineVertices[startIndex];
 		Vertex lastVertex = null;
 		int i = startIndex;

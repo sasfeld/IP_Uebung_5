@@ -5,9 +5,9 @@
  */
 package de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.algorithm;
 
-import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Vector2D;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Vertex;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Outline;
+import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Polygon;
 
 /**
  * Interface for the polygon finding algorithm (Potrace part 2).
@@ -59,5 +59,5 @@ public interface IPolygonFinder {
 	 * @param possibleSegments
 	 * @return
 	 */
-	Vector2D[] findOptimalPolygon(int[]possibleSegments);
+	Polygon findOptimalPolygon(int[]possibleSegments);
 }

@@ -44,7 +44,8 @@ public class SvgBuilder {
 	private String viewBoxWidth = "100%";
 	private String curveStrokeWidth = "0.1";
 	private String curveStrokeColor = "black";
-	private String curveFillColor = "green";
+	private String outerCurveFillColor = "black";
+	private String innerCurveFillColor = "white";
 
 	private String title = "";
 
@@ -144,12 +145,20 @@ public class SvgBuilder {
 	}
 
 	private void appendDirectPath(StringBuilder strBuilder, Curve curve) {
-		addLine(strBuilder, String.format(DIRECT_CURVE, this.curveStrokeColor, this.getFill(), this.curveStrokeWidth,
+		addLine(strBuilder, String.format(DIRECT_CURVE, this.curveStrokeColor, this.getFill(curve), this.curveStrokeWidth,
 				this.buildDirectPath(curve)));
 	}
 
-	private String getFill() {
-		return this.isRenderCurveFillings() ? this.curveFillColor : "none";
+	private String getFill(Curve c) {
+		if (!this.isRenderCurveFillings()) {
+			return "none";
+		}
+		
+		if (c.isOuter()) {
+			return this.outerCurveFillColor;
+		} else {
+			return this.innerCurveFillColor;
+		}
 	}
 
 	private String buildDirectPath(Curve curve) {
@@ -162,7 +171,7 @@ public class SvgBuilder {
 	}
 
 	private void appendBezier(StringBuilder strBuilder, BezierCurve curve) {
-		addLine(strBuilder, String.format(BEZIER_CURVE, this.curveStrokeColor, this.getFill(), this.curveStrokeWidth,
+		addLine(strBuilder, String.format(BEZIER_CURVE, this.curveStrokeColor, this.getFill(curve), this.curveStrokeWidth,
 				this.buildBezierPath(curve)));
 	}
 

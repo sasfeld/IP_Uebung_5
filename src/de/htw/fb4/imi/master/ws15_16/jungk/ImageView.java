@@ -20,10 +20,10 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 
-import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Vector2D;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.Vertex;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Outline;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.OutlineEdge;
+import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Polygon;
 
 public class ImageView extends JScrollPane {
 
@@ -55,7 +55,7 @@ public class ImageView extends JScrollPane {
 	public static boolean boolRaster = false;
 
 	protected Set<Outline> outlines;
-	protected Set<Vector2D[]> polygons;
+	protected Set<Polygon> polygons;
 
 	private double zoom = MIN_ZOOM;
 	int pixels[] = null; // pixel array in ARGB format
@@ -115,8 +115,8 @@ public class ImageView extends JScrollPane {
 		screen.revalidate();
 	}
 
-	public void setOuterPolygons(Set<Vector2D[]> polygons2) {
-		this.polygons = polygons2;
+	public void setOuterPolygons(Set<Polygon> outerPolygons) {
+		this.polygons = outerPolygons;
 		screen.revalidate();
 	}
 
@@ -487,12 +487,12 @@ public class ImageView extends JScrollPane {
 
 			g.setColor(COLOR_POLYGON);
 			((Graphics2D) g).setStroke(new BasicStroke(WIDTH_POLYGON));
-			for (Vector2D[] polygon : polygons) {
+			for (Polygon polygon : polygons) {
 				// System.out.println();
-				for (int i = 0; i < polygon.length; i++) {
+				for (int i = 0; i < polygon.size(); i++) {
 					// System.out.print(polygon[i]);
-					Vertex a = polygon[i].getA();
-					Vertex b = polygon[i].getB();
+					Vertex a = polygon.get(i).getA();
+					Vertex b = polygon.get(i).getB();
 
 					drawDot(g, a);
 					drawDot(g, b);
@@ -535,7 +535,7 @@ public class ImageView extends JScrollPane {
 		}
 	}
 
-	public Set<Vector2D[]> getPolygons() {
+	public Set<Polygon> getPolygons() {
 		return this.polygons;
 	}
 }

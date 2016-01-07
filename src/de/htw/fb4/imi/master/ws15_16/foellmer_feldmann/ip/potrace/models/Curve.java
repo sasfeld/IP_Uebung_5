@@ -19,6 +19,8 @@ public class Curve {
 	
 	protected Vertex second;
 	
+	protected boolean isOuter;
+	
 	/**
 	 * @return the second
 	 */
@@ -61,6 +63,14 @@ public class Curve {
 		this.last = last;
 	}
 
+	public void setOuter(boolean isOuter) {
+		this.isOuter = isOuter;
+	}
+	
+	public boolean isOuter() {
+		return isOuter;
+	}
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
