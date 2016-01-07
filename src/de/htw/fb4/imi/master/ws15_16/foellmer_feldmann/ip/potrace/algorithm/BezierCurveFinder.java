@@ -14,7 +14,9 @@ import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Curve;
 import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.util.VectorUtil;
 
 /**
- * [SHORT_DESCRIPTION] 
+ * Algorithm to find bezier curves by a given {@link Vector2D} array.
+ * 
+ * If a special alpha is overhauled, a direct path will be added instead of a curve.
  *
  * @author Sascha Feldmann <sascha.feldmann@gmx.de>
  * @since 06.01.2016
@@ -65,11 +67,19 @@ public class BezierCurveFinder implements ICurveFinder {
 	}
 
 	private void createCurves(Vector2D[] polygon) {
-		for (int i = 1; i < polygon.length; i++) {
+		for (int i = 0; i < polygon.length; i++) {
+			Vertex bIMinus1 = null;
+			
 			// Step 1: find Mittelpunkte (center)
-			Vertex bIMinus1 = calcMiddle(polygon[i - 1].getA(), polygon[i - 1].getB());
 			Vertex aI = polygon[i].getA();
 			Vertex bI = calcMiddle(polygon[i].getA(), polygon[i].getB());
+			
+			if (i == 0) {
+				// last element is the last vertex within the polygon
+				bIMinus1 = calcMiddle(polygon[polygon.length - 1].getA(), polygon[polygon.length - 1].getB());
+			} else {
+				bIMinus1 = calcMiddle(polygon[i - 1].getA(), polygon[i - 1].getB());
+			}
 			
 			// Step 2: calculate Alpha
 			int d = calculateDistanceFromVertexToPath(aI, bIMinus1, bI);
