@@ -18,7 +18,7 @@ import de.htw.fb4.imi.master.ws15_16.foellmer_feldmann.ip.potrace.models.Curve;
  * @since 06.01.2016
  */
 public class SvgBuilder {
-	private static String STYLE_HEADER = "<style type=\"text/css\">" + "<![CDATA[" + "text {font-size:24px; }" + "]]>"
+	private static final String STYLE_HEADER = "<style type=\"text/css\">" + "<![CDATA[" + "text {font-size:24px; }" + "]]>"
 			+ "</style>";
 	private static final String HEADER = ""
 			+ "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
@@ -34,8 +34,6 @@ public class SvgBuilder {
 			+ ">";
 	private static final String TITLE_HEADER = "<title>%s</title>";
 	private static final String PATH = "<path stroke=\"%s\" fill=\"%s\" stroke-width=\"%s\" d=\"%s Z\" />";
-	private static final String DIRECT_CURVE = "<path stroke=\"%s\" fill=\"%s\" stroke-width=\"%s\" d=\"%s\" />";
-	private static final String BEZIER_CURVE = "<path stroke=\"%s\" fill=\"%s\" stroke-width=\"%s\" d=\"%s\" />";
 
 	private static final String CLOSING_TAG = "</svg>";
 
@@ -141,23 +139,20 @@ public class SvgBuilder {
 		
 		for (Curve curve : curves) {
 			lastCurve = curve;
-//			path += "M " + this.getCoordinateString(curve.getFirst()) + " ";
 	
 			if (curve instanceof BezierCurve) {
-//				this.appendBezierToString(path, (BezierCurve) curve);
 				this.appendBezier(pathBuilder, (BezierCurve) curve);
 			} else {
-//				this.appendDirectToString(path, curve);
 				this.appendDirectPath(pathBuilder, curve);
 			}
 		}
 		
-		addLine(strBuilder, String.format(PATH, this.curveStrokeColor, this.getFill(lastCurve), this.curveStrokeWidth, pathBuilder.toString()));
+		if (null != lastCurve) {
+			addLine(strBuilder, String.format(PATH, this.curveStrokeColor, this.getFill(lastCurve), this.curveStrokeWidth, pathBuilder.toString()));
+		}
 	}
 	
 	private void appendDirectPath(StringBuilder strBuilder, Curve curve) {
-//		addLine(strBuilder, String.format(DIRECT_CURVE, this.curveStrokeColor, this.getFill(curve), this.curveStrokeWidth,
-//				this.buildDirectPath(curve)));
 		strBuilder.append(this.buildDirectPath(curve));
 	}
 
@@ -184,8 +179,6 @@ public class SvgBuilder {
 
 	private void appendBezier(StringBuilder strBuilder, BezierCurve curve) {
 		strBuilder.append(this.buildBezierPath(curve));
-//		addLine(strBuilder, String.format(BEZIER_CURVE, this.curveStrokeColor, this.getFill(curve), this.curveStrokeWidth,
-//				this.buildBezierPath(curve)));
 	}
 
 	private String buildBezierPath(BezierCurve curve) {
