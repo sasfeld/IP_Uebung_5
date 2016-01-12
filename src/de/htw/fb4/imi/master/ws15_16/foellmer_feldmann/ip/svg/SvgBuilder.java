@@ -33,6 +33,7 @@ public class SvgBuilder {
 			+ " viewBox=\"0 0 %s %s\""
 			+ ">";
 	private static final String TITLE_HEADER = "<title>%s</title>";
+	private static final String PATH = "<path stroke=\"%s\" fill=\"%s\" stroke-width=\"%s\" d=\"%s Z\" />";
 	private static final String DIRECT_CURVE = "<path stroke=\"%s\" fill=\"%s\" stroke-width=\"%s\" d=\"%s\" />";
 	private static final String BEZIER_CURVE = "<path stroke=\"%s\" fill=\"%s\" stroke-width=\"%s\" d=\"%s\" />";
 
@@ -135,18 +136,29 @@ public class SvgBuilder {
 	}
 
 	private void appendConture(StringBuilder strBuilder, Curve[] curves) {
+		StringBuilder pathBuilder = new StringBuilder();
+		Curve lastCurve = null;
+		
 		for (Curve curve : curves) {
+			lastCurve = curve;
+//			path += "M " + this.getCoordinateString(curve.getFirst()) + " ";
+	
 			if (curve instanceof BezierCurve) {
-				this.appendBezier(strBuilder, (BezierCurve) curve);
+//				this.appendBezierToString(path, (BezierCurve) curve);
+				this.appendBezier(pathBuilder, (BezierCurve) curve);
 			} else {
-				this.appendDirectPath(strBuilder, curve);
+//				this.appendDirectToString(path, curve);
+				this.appendDirectPath(pathBuilder, curve);
 			}
 		}
+		
+		addLine(strBuilder, String.format(PATH, this.curveStrokeColor, this.getFill(lastCurve), this.curveStrokeWidth, pathBuilder.toString()));
 	}
-
+	
 	private void appendDirectPath(StringBuilder strBuilder, Curve curve) {
-		addLine(strBuilder, String.format(DIRECT_CURVE, this.curveStrokeColor, this.getFill(curve), this.curveStrokeWidth,
-				this.buildDirectPath(curve)));
+//		addLine(strBuilder, String.format(DIRECT_CURVE, this.curveStrokeColor, this.getFill(curve), this.curveStrokeWidth,
+//				this.buildDirectPath(curve)));
+		strBuilder.append(this.buildDirectPath(curve));
 	}
 
 	private String getFill(Curve c) {
@@ -162,7 +174,7 @@ public class SvgBuilder {
 	}
 
 	private String buildDirectPath(Curve curve) {
-		return "M " + getCoordinateString(curve.getFirst()) + " L " + getCoordinateString(curve.getSecond()) + " L "
+		return " M " + getCoordinateString(curve.getFirst()) + " L " + getCoordinateString(curve.getSecond()) + " L "
 				+ getCoordinateString(curve.getLast());
 	}
 
@@ -171,12 +183,13 @@ public class SvgBuilder {
 	}
 
 	private void appendBezier(StringBuilder strBuilder, BezierCurve curve) {
-		addLine(strBuilder, String.format(BEZIER_CURVE, this.curveStrokeColor, this.getFill(curve), this.curveStrokeWidth,
-				this.buildBezierPath(curve)));
+		strBuilder.append(this.buildBezierPath(curve));
+//		addLine(strBuilder, String.format(BEZIER_CURVE, this.curveStrokeColor, this.getFill(curve), this.curveStrokeWidth,
+//				this.buildBezierPath(curve)));
 	}
 
 	private String buildBezierPath(BezierCurve curve) {
-		return "M " + getCoordinateString(curve.getFirst()) + " C " + getCoordinateString(curve.getSecond()) + " "
+		return " M " + getCoordinateString(curve.getFirst()) + " C " + getCoordinateString(curve.getSecond()) + " "
 				+ getCoordinateString(curve.getThird()) + " " + getCoordinateString(curve.getLast());
 	}
 
