@@ -182,10 +182,12 @@ public class SvgBuilder {
 	private void appendPathBeginning(StringBuilder pathBuilder, Curve curve) {
 		pathBuilder.append("M ");
 		pathBuilder.append(getCoordinateString(curve.getFirst()));
+		pathBuilder.append("\n\t\t");
 	}
 
 	private void appendDirectPath(StringBuilder strBuilder, Curve curve) {
 		strBuilder.append(this.buildDirectPath(curve));
+		strBuilder.append("\n\t\t");
 	}
 
 	private String getFill(Curve c) {
@@ -211,6 +213,7 @@ public class SvgBuilder {
 
 	private void appendBezier(StringBuilder strBuilder, BezierCurve curve) {
 		strBuilder.append(this.buildBezierPath(curve));
+		strBuilder.append("\n\t\t");
 	}
 
 	private String buildBezierPath(BezierCurve curve) {
