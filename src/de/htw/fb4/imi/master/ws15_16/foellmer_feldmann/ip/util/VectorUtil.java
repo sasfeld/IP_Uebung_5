@@ -30,7 +30,10 @@ public class VectorUtil {
 	public static Vertex normalize(Vertex s) {
 		double length = Math.sqrt(Math.pow(s.getX(), 2) + Math.pow(s.getY(), 2));		
 		
-		return new Vertex((int) (s.getX() / length), (int) (s.getY() / length));
+		int normalizedX = (int) Math.round(s.getX() / length);
+		int normalizedY = (int) Math.round(s.getY() / length);
+		
+		return new Vertex(normalizedX, normalizedY);
 	}
 
 	public static int calcScalarProduct(Vertex a, Vertex b) {

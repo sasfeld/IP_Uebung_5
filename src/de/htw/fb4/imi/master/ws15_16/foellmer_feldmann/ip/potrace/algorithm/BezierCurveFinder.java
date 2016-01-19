@@ -91,8 +91,10 @@ public class BezierCurveFinder implements ICurveFinder {
 				a = this.minAlpha;
 			}
 			
+			System.out.println("a is: " + a);
 			Curve c;			
 			if (a > this.maxAlpha) {
+				System.out.println("Füge gerade Verbindung hinzu");
 				// gerade Verbindung b-1 -> ai -> bi
 				c = new Curve();
 				c.setFirst(bIMinus1);
@@ -100,6 +102,7 @@ public class BezierCurveFinder implements ICurveFinder {
 				c.setLast(bI);
 				c.setOuter(polygon.isOuter());
 			} else {
+				System.out.println("Füge Bezierkurve hinzu");
 				// Bezierkurve
 				c = new BezierCurve();
 				BezierCurve cBezier = (BezierCurve) c;
