@@ -138,6 +138,10 @@ public class SvgBuilder {
 		Curve lastCurve = null;
 		
 		for (Curve curve : curves) {
+			if (null == lastCurve) {
+				// append move to for first vertex on conture only
+				this.appendPathBeginning(pathBuilder, curve);
+			}
 			lastCurve = curve;
 	
 			if (curve instanceof BezierCurve) {
@@ -152,6 +156,11 @@ public class SvgBuilder {
 		}
 	}
 	
+	private void appendPathBeginning(StringBuilder pathBuilder, Curve curve) {
+		pathBuilder.append("M ");
+		pathBuilder.append(getCoordinateString(curve.getFirst()));
+	}
+
 	private void appendDirectPath(StringBuilder strBuilder, Curve curve) {
 		strBuilder.append(this.buildDirectPath(curve));
 	}
@@ -169,8 +178,8 @@ public class SvgBuilder {
 	}
 
 	private String buildDirectPath(Curve curve) {
-		return " M " + getCoordinateString(curve.getFirst()) + " L " + getCoordinateString(curve.getSecond()) + " L "
-				+ getCoordinateString(curve.getLast());
+		return " L " + getCoordinateString(curve.getSecond()) 
+			 + " L "	+ getCoordinateString(curve.getLast());
 	}
 
 	private String getCoordinateString(Vertex vertex) {
@@ -182,7 +191,7 @@ public class SvgBuilder {
 	}
 
 	private String buildBezierPath(BezierCurve curve) {
-		return " M " + getCoordinateString(curve.getFirst()) + " C " + getCoordinateString(curve.getSecond()) + " "
+		return " C " + getCoordinateString(curve.getSecond()) + " "
 				+ getCoordinateString(curve.getThird()) + " " + getCoordinateString(curve.getLast());
 	}
 
@@ -199,7 +208,8 @@ public class SvgBuilder {
 	}
 
 	private void addLine(StringBuilder strBuilder, String line) {
-		strBuilder.append(line + "\n\n");
+		strBuilder.append(line.trim());
+		strBuilder.append("\n\n");
 	}
 
 	private void appendClosingTag(StringBuilder strBuilder) {
