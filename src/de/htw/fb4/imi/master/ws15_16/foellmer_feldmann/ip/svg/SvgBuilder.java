@@ -129,8 +129,31 @@ public class SvgBuilder {
 
 	private void appendCurves(StringBuilder strBuilder) {
 		for (Curve[] curve : curves) {
+			// paint outer contures first
+			if (!isOuterConture(curve)) {
+				continue;
+			}
 			this.appendConture(strBuilder, curve);
 		}
+		for (Curve[] curve : curves) {
+			// paint inner contures last
+			if (isOuterConture(curve)) {
+				continue;
+			}
+			this.appendConture(strBuilder, curve);
+		}
+	}
+
+	private boolean isOuterConture(Curve[] curve) {
+		if (curve.length == 0) {
+			return false;
+		}
+		
+		if (curve[0].isOuter()) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	private void appendConture(StringBuilder strBuilder, Curve[] curves) {
