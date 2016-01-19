@@ -120,10 +120,11 @@ public class BezierCurveFinder implements ICurveFinder {
 		}		
 	}
 
-	private int calculateDistanceFromVertexToPath(Vertex v, Vertex a, Vertex b) {
-		Vertex s = new Vertex(b.getY() - a.getY(), - (b.getX() - a.getX()));
+	private int calculateDistanceFromVertexToPath(Vertex aI, Vertex bIMinus1, Vertex bI) {
+		// aI, bIMinus1, bI
+		Vertex s = new Vertex(bI.getY() - bIMinus1.getY(), - (bI.getX() - bIMinus1.getX()));
 		s = VectorUtil.normalize(s);		
-		Vertex vMinusA = new Vertex(v.getX() - a.getX(), v.getY() - a.getY());
+		Vertex vMinusA = new Vertex(aI.getX() - bIMinus1.getX(), aI.getY() - bIMinus1.getY());
 		
 		int d = VectorUtil.calcScalarProduct(s, vMinusA);
 		return d;

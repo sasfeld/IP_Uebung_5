@@ -21,8 +21,8 @@ public class VectorUtil {
 	}
 
 	public static Vertex calcMiddle(Vertex a, Vertex b) {
-		int middleX = a.getX() + ((b.getX() - a.getX()) / 2);
-		int middleY = a.getY() + ((b.getY() - a.getY()) / 2);
+		int middleX = (a.getX() + b.getX()) / 2;
+		int middleY = (a.getY() + b.getY()) / 2;
 		
 		return new Vertex(middleX, middleY);
 	}
